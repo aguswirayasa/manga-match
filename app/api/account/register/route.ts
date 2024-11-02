@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import prisma from "@/lib/prisma";
 
@@ -7,7 +7,7 @@ interface RegisterRequest {
   email: string;
   password: string;
 }
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const { username, email, password }: RegisterRequest = await req.json();
 
   if (!username || !email || !password) {

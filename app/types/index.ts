@@ -9,3 +9,8 @@ export type MangaPost = {
   isFavorited?: boolean;
   description: string;
 };
+
+export interface UploadedFile {
+  name: string;
+  data: Buffer; // Ensure the data is of type Buffer
+}

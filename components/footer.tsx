@@ -1,6 +1,6 @@
 import { Github } from "lucide-react";
 
-const Footer = () => {
+export default function Footer() {
   return (
     <>
       {/* Footer */}
@@ -88,6 +88,4 @@ const Footer = () => {
       </footer>
     </>
   );
-};
-
-export default Footer;
+}
