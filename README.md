@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+# Manga Match
+
+**Manga Match** is a social platform for manga, manhwa, and manhua enthusiasts. It allows users to share, discover, and recommend their favorite titles to a like-minded community.
+
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Project Overview
+Manga Match provides a dedicated space for fans of manga, manhwa, and manhua to interact. With features like post creation, liking, favoriting, and user profile management, the platform encourages discovery and community engagement.
+
+## Features
+- **Account Registration & Authentication**: Secure sign-up and sign-in process using NextAuth.
+- **Create Post**: Users can create posts to share their favorite manga or recommendations.
+- **Manage Posts**: Edit or delete previously created posts.
+- **Favorites & Likes**: Mark and like posts to save or show appreciation.
+- **Profile Updates**: Update personal information, including profile picture and bio.
+
+## Tech Stack
+- **Frontend**: TypeScript, Next.js 13, Tailwind CSS, ShadCN UI
+- **Authentication**: NextAuth for user registration and login
+- **Backend**: Prisma with MySQL for data storage and ORM
+- **Database**: MySQL
 
 ## Getting Started
+To set up the project locally, follow these steps:
 
-First, run the development server:
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yourusername/mangamatch.git
+   cd mangamatch
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Set up the environment variables**:
+   Create a `.env` file in the root directory and add the following:
+
+   ```plaintext
+   DATABASE_URL="mysql://root:admin@localhost:3306/mangamatch"
+   NEXTAUTH_SECRET="supersecret"
+   ```
+
+4. **Run database migrations**:
+   ```bash
+   npx prisma migrate dev
+   ```
+
+5. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+
+6. **Access the application**:
+   Visit `http://localhost:3000` in your browser to start using Manga Match.
+
+## Environment Variables
+- `DATABASE_URL`: URL to connect to the MySQL database.
+- `NEXTAUTH_SECRET`: Secret key for NextAuth session encryption.
+
+## Project Structure
+```plaintext
+├── components          # UI components (Avatar, Button, etc.)
+├── lib                 # Utility functions and helper files
+├── pages               # Next.js pages and routing
+├── prisma              # Prisma schema and migrations
+├── public              # Static assets (images, etc.)
+├── styles              # Global styles and Tailwind configuration
+└── .env                # Environment variables
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Contributing
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/YourFeature`).
+3. Commit your changes (`git commit -m 'Add new feature'`).
+4. Push to the branch (`git push origin feature/YourFeature`).
+5. Open a Pull Request.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+This project is licensed under the MIT License.
