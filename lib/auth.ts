@@ -30,11 +30,11 @@ const authOptions: NextAuthOptions = {
           (await bcrypt.compare(credentials.password, user.password))
         ) {
           return {
-            id: user.id + "",
-            role: "user",
+            id: user.id,
             email: user.email,
             name: user.username,
-            image: "",
+            image: user.avatar,
+            bio: user.bio,
             username: user.username,
           }; // Return the user object if authentication is successful
         }

@@ -1,5 +1,6 @@
 import { MangaPost } from "@/app/types";
 import { ClockIcon, GridIcon, HeartIcon, TrendingUpIcon } from "lucide-react";
+import { Badge } from "../ui/badge";
 
 interface Recommendations {
   recommendations: MangaPost[];
@@ -7,7 +8,7 @@ interface Recommendations {
 
 export function LeftSidebar() {
   return (
-    <aside className="bg-background text-foreground p-4 space-y-4 hidden md:block">
+    <aside className="bg-background text-foreground p-4 space-y-4 hidden lg:block">
       <h2 className="text-lg font-bold text-primary">Browse</h2>
       <nav className="space-y-3">
         <a href="/popular" className="flex items-center hover:text-primary">
@@ -32,7 +33,7 @@ export function LeftSidebar() {
 
 export function RightSidebar({ recommendations }: Recommendations) {
   return (
-    <aside className="bg-background text-foreground p-4 space-y-4 hidden md:block">
+    <aside className="bg-background text-foreground p-4 space-y-4 hidden lg:block">
       <h2 className="text-lg font-bold text-primary">
         Recommended by Community
       </h2>
@@ -40,15 +41,13 @@ export function RightSidebar({ recommendations }: Recommendations) {
         {recommendations.map((manga, idx) => (
           <div key={idx} className="flex items-center space-x-4">
             <img
-              src="1.jpg"
+              src={manga.image}
               alt={`${manga.title} cover`}
               className="w-20 h-28"
             />
             <div>
               <h3 className="font-semibold">{manga.title}</h3>
-              <p className="text-sm text-muted-foreground">
-                {manga.description}
-              </p>
+              <Badge className="uppercase">{manga.type}</Badge>
             </div>
           </div>
         ))}

@@ -14,17 +14,51 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  username   String   @unique
+  email      String   @unique
+  password   String
+  createdAt  DateTime @default(now())
+  avatar     String?
+  bio        String?
+  posts      Post[]   @relation("UserPosts") 
+  likes      Like[]   
+  favorites  Favorite[] 
 }
+
 model Post {
+  id          Int      @id @default(autoincrement())
+  title       String
+  type        String
+  content     String   @db.Text
+  image       String   
+  createdAt   DateTime @default(now())
+  isFavorited Boolean  @default(false)
+
+  authorId    String
+  author      User     @relation("UserPosts", fields: [authorId], references: [id])
+  likes       Like[]   
+  favorites   Favorite[] 
+}
+
+model Like {
   id      Int      @id @default(autoincrement())
-  title   String
-  type    String
-  content String   @db.Text
-  image   String   // Store the URL or path of the uploaded image
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String
+  post    Post     @relation(fields: [postId], references: [id])
+  postId  Int
   createdAt DateTime @default(now())
+
+  @@unique([userId, postId]) 
+}
+
+model Favorite {
+  id      Int      @id @default(autoincrement())
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String
+  post    Post     @relation(fields: [postId], references: [id])
+  postId  Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId]) 
 }

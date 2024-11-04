@@ -7,6 +7,8 @@ declare module "next-auth" {
       id: string; // Add the user ID here
       email: string;
       username: string; // Include any other properties you have
+      avatar: string;
+      bio: string;
     } & DefaultSession["user"];
   }
 

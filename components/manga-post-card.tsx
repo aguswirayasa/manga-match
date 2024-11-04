@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react"; // Adjusted imports
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { formatDistanceToNow } from "date-fns";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -11,89 +11,163 @@ import {
   MessageCircle,
   Bookmark,
   Share,
-  HeartIcon,
-  HeartPulse,
-  HeartOff,
+  MoreVertical,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { MangaPost } from "@/app/types";
+import Image from "next/image";
+import { Badge } from "./ui/badge";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import EditMangaModal from "./profile/edit-manga-modal";
+import DeletePostModal from "./profile/delete-manga-modal";
 
-export default function MangaPostCard() {
-  const [isLiked, setIsLiked] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [isScrollable, setIsScrollable] = useState(false);
+interface MangaPostCardProps {
+  manga: MangaPost;
+  edit: boolean;
+}
 
-  useEffect(() => {
-    if (contentRef.current) {
-      setIsScrollable(
-        contentRef.current.scrollHeight > contentRef.current.clientHeight
-      );
+export default function MangaPostCard({ manga, edit }: MangaPostCardProps) {
+  const {
+    id,
+    title,
+    content,
+    image,
+    type,
+    createdAt,
+    isFavorited,
+    author,
+    isLiked,
+    likes,
+  } = manga;
+
+  const formattedDate = formatDistanceToNow(new Date(createdAt), {
+    addSuffix: true,
+  });
+
+  const router = useRouter();
+  const [liked, setLiked] = useState(isLiked);
+  const [favorited, setFavorited] = useState(isFavorited);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false); // New state for delete modal
+
+  const handleFavorite = async (postId: number) => {
+    try {
+      const response = await axios.post("/api/posts/favorite", { postId });
+      setFavorited((prev) => !prev);
+      toast.success(response.data.message || "Post favorited successfully!");
+      router.refresh();
+    } catch (error) {
+      toast.error("Something went wrong, Please try again");
     }
-  }, []);
+  };
+
+  const handleLike = async (postId: number) => {
+    try {
+      const response = await axios.post("/api/posts/like", { postId });
+      setLiked((prev) => !prev);
+      toast.success(response.data.message || "Post liked successfully!");
+      router.refresh();
+    } catch (error) {
+      toast.error("Something went wrong, Please try again");
+    }
+  };
 
   return (
-    <Card className="flex flex-col sm:flex-row  mx-auto bg-gray-800 text-white overflow-hidden">
+    <Card className="flex flex-col sm:flex-row w-full mx-auto bg-gray-800 text-white overflow-hidden">
       <div className="relative w-full sm:w-auto">
-        <img
-          src="/1.jpg"
-          alt="Manga Cover"
-          className="w-full h-[240px] sm:h-[320px] md:h-[420px] sm:w-[180px] md:w-[240px] lg:w-[420px] object-cover"
-        />
+        <div className="w-full h-[420px] sm:h-[320px] md:h-[420px] sm:w-[260px] md:w-[280px] lg:w-[320px]">
+          <Image fill src={image} alt="Manga Cover" className="object-fill" />
+        </div>
       </div>
       <div className="flex flex-col p-4 w-full">
         <div className="flex items-center mb-4">
           <Avatar className="h-10 w-10">
             <AvatarImage
-              src="/placeholder.svg?height=40&width=40"
-              alt="@username"
+              src={author?.avatar || "default-avatar.webp"}
+              alt={author.username}
             />
             <AvatarFallback>UN</AvatarFallback>
           </Avatar>
-          <span className="ml-2 font-bold">@username</span>
-          <p className="ml-auto text-gray-400">38 minutes ago</p>
+          <span className="ml-2 font-bold">{author.username}</span>
+          <p className="ml-auto text-gray-400 capitalize">{formattedDate}</p>
+          {edit && (
+            <>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <MoreVertical />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent the dropdown from closing
+                      setEditModalOpen(true); // Open the edit modal
+                    }}
+                  >
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent the dropdown from closing
+                      setDeleteModalOpen(true); // Open the delete modal
+                    }}
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DeletePostModal
+                isOpen={isDeleteModalOpen} // Use delete modal state
+                mangaId={manga.id}
+                onClose={() => {
+                  setDeleteModalOpen(false); // Close the delete modal
+                  router.refresh(); // Refresh the router if needed
+                }}
+              />
+              <EditMangaModal
+                manga={manga}
+                mangaId={manga.id}
+                isOpen={isEditModalOpen}
+                onClose={() => {
+                  setEditModalOpen(false);
+                  router.refresh();
+                }}
+              />
+            </>
+          )}
         </div>
 
         <Separator className="mb-4" />
-        <h2 className="text-xl font-bold mb-2">Manga Title Goes Here</h2>
-        <ScrollArea className="flex-grow mb-4" style={{ maxHeight: "200px" }}>
-          <div ref={contentRef}>
-            <p className="text-gray-300">
-              This is a description of the manga. It can be quite long and will
-              scroll if it exceeds the maximum height. Lorem ipsum dolor sit
-              amet, consectetur adipiscing elit. Sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-              veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-              ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-              voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-              officia deserunt mollit anim id est laborum. veniam, quis nostrud
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate
-              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-              occaecat cupidatat non proident, sunt in culpa qui officia
-              deserunt mollit anim id est laborum. veniam, quis nostrud
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate
-              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-              occaecat cupidatat non proident, sunt in culpa qui officia
-              deserunt mollit anim id est laborum.
-            </p>
+        <h2 className="text-xl font-bold mb-2">{title}</h2>
+        <span>
+          <Badge className="uppercase">{type}</Badge>
+        </span>
+        <ScrollArea
+          className="flex-grow mb-4 overflow-y-auto"
+          style={{ maxHeight: "200px" }}
+        >
+          <div>
+            <p className="text-gray-300">{content}</p>
           </div>
         </ScrollArea>
-        {isScrollable && (
-          <div className="text-xs text-gray-400 mb-2 italic">
-            Scroll for more
-          </div>
-        )}
 
-        <div className="flex items-center   mt-auto space-x-6">
-          {/* Likes */}
-
+        <div className="flex items-center mt-auto space-x-6">
           <Tooltip delayDuration={10}>
             <TooltipTrigger asChild>
               <Heart
-                fill="#fafafa"
-                className={`h-5 w-5 md:h-6 lg:w-6 cursor-pointer hover:text-primary ${
-                  isLiked ? "text-primary" : "text-gray-400"
+                fill={liked ? "#fafafa" : "none"}
+                onClick={() => handleLike(id)}
+                className={`h-5 w-5 md:h-6 lg:w-6 cursor-pointer ${
+                  liked ? "fill-primary text-primary" : "text-gray-400"
                 }`}
               />
             </TooltipTrigger>
@@ -101,9 +175,6 @@ export default function MangaPostCard() {
               <p>Like</p>
             </TooltipContent>
           </Tooltip>
-
-          {/* Comments */}
-
           <Tooltip delayDuration={10}>
             <TooltipTrigger asChild>
               <MessageCircle className="h-5 w-5 md:h-6 lg:w-6 text-gray-400 hover:text-primary cursor-pointer" />
@@ -113,7 +184,6 @@ export default function MangaPostCard() {
             </TooltipContent>
           </Tooltip>
 
-          {/* Share */}
           <Tooltip delayDuration={10}>
             <TooltipTrigger asChild>
               <Share className="h-5 w-5 md:h-6 lg:w-6 text-gray-400 hover:text-primary cursor-pointer" />
@@ -122,12 +192,15 @@ export default function MangaPostCard() {
               <p>Share</p>
             </TooltipContent>
           </Tooltip>
-
-          {/* Bookmark */}
           <div className="flex justify-end w-full">
             <Tooltip delayDuration={10}>
               <TooltipTrigger asChild>
-                <Bookmark className="h-5 w-5 md:h-6 lg:w-6 text-gray-400 hover:text-primary cursor-pointer" />
+                <Bookmark
+                  onClick={() => handleFavorite(id)}
+                  className={`h-5 w-5 md:h-6 lg:w-6 cursor-pointer ${
+                    favorited ? "fill-primary text-primary" : "text-gray-400"
+                  }`}
+                />
               </TooltipTrigger>
               <TooltipContent>
                 <p>Bookmark</p>
@@ -136,7 +209,7 @@ export default function MangaPostCard() {
           </div>
         </div>
         <div className="mt-2">
-          <p className=" text-sm">3155 likes</p>
+          <p className=" text-sm">{likes?.length} likes</p>
         </div>
       </div>
     </Card>

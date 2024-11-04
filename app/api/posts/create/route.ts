@@ -1,10 +1,19 @@
 import { UploadedFile } from "@/app/types";
 import prisma from "@/lib/prisma";
-import { saveImage } from "@/lib/server-utils";
+import { saveImage } from "@/lib/uploadfile";
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import authOptions from "@/lib/auth";
 
 // Handle POST requests to create a new post
 export async function POST(req: NextRequest) {
+  // Retrieve the session to get the authenticated user
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user || !session.user.id) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+  const userId = session.user.id; // Get the user ID from the session
+
   // Parse form data
   const formData = await req.formData();
 
@@ -16,9 +25,6 @@ export async function POST(req: NextRequest) {
 
   let imageUrl: string | undefined; // Declare imageUrl
 
-  // Log the received data
-  console.log(title, content, image, type);
-
   // Check if image is provided and save it
   if (image) {
     const uploadedFile: UploadedFile = {
@@ -27,7 +33,7 @@ export async function POST(req: NextRequest) {
     };
 
     try {
-      imageUrl = await saveImage(uploadedFile);
+      imageUrl = await saveImage(uploadedFile, session.user.name, new Date());
       console.log("Image saved at:", imageUrl);
     } catch (error) {
       console.error("Error saving image:", error);
@@ -55,8 +61,9 @@ export async function POST(req: NextRequest) {
       data: {
         title,
         content,
-        image: imageUrl!!,
+        image: imageUrl,
         type,
+        author: { connect: { id: userId } }, // Connect the post to the user
       },
     });
 
