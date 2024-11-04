@@ -1,11 +1,8 @@
-import { MangaPost } from "@/app/types";
 import CreatePostModal from "@/components/discover/create-post-modal";
 import { LeftSidebar, RightSidebar } from "@/components/discover/sidebar";
 import MangaPostCard from "@/components/manga-post-card";
 import { getAllPost } from "@/lib/server-utils";
 import { getServerSession } from "next-auth";
-
-import Image from "next/image";
 
 export default async function DiscoverPage() {
   const session = await getServerSession();
