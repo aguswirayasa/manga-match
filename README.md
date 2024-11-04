@@ -1,9 +1,9 @@
-
 # Manga Match
 
 **Manga Match** is a social platform for manga, manhwa, and manhua enthusiasts. It allows users to share, discover, and recommend their favorite titles to a like-minded community.
 
 ## Table of Contents
+
 - [Project Overview](#project-overview)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
@@ -16,9 +16,11 @@
 ---
 
 ## Project Overview
+
 Manga Match provides a dedicated space for fans of manga, manhwa, and manhua to interact. With features like post creation, liking, favoriting, and user profile management, the platform encourages discovery and community engagement.
 
 ## Features
+
 - **Account Registration & Authentication**: Secure sign-up and sign-in process using NextAuth.
 - **Create Post**: Users can create posts to share their favorite manga or recommendations.
 - **Manage Posts**: Edit or delete previously created posts.
@@ -26,21 +28,25 @@ Manga Match provides a dedicated space for fans of manga, manhwa, and manhua to 
 - **Profile Updates**: Update personal information, including profile picture and bio.
 
 ## Tech Stack
+
 - **Frontend**: TypeScript, Next.js 13, Tailwind CSS, ShadCN UI
 - **Authentication**: NextAuth for user registration and login
 - **Backend**: Prisma with MySQL for data storage and ORM
 - **Database**: MySQL
 
 ## Getting Started
+
 To set up the project locally, follow these steps:
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/aguswirayasa/mangamatch.git
    cd mangamatch
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```
@@ -53,24 +59,49 @@ To set up the project locally, follow these steps:
    NEXTAUTH_SECRET="supersecret"
    ```
 
-4. **Run database migrations**:
-   ```bash
-   npx prisma migrate dev
-   ```
+### 4. Install Prisma
 
-5. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
+1. Install the Prisma CLI as a development dependency:
 
-6. **Access the application**:
-   Visit `http://localhost:3000` in your browser to start using Manga Match.
+```bash
+npm install prisma --save-dev
+```
+
+2. Initialize Prisma in your project:
+
+```bash
+npx prisma init
+```
+
+### 5. Run database migrations
+
+```bash
+npx prisma migrate dev
+```
+
+### 6. Add uploads folder to public folder
+
+```bash
+mkdir -p public/uploads
+```
+
+### 7. Start the development server
+
+```bash
+npm run dev --turbo
+```
+
+### 8. Access the application
+
+Visit `http://localhost:3000` in your browser to start using Manga Match.
 
 ## Environment Variables
+
 - `DATABASE_URL`: URL to connect to the MySQL database.
 - `NEXTAUTH_SECRET`: Secret key for NextAuth session encryption.
 
 ## Project Structure
+
 ```plaintext
 ├── components          # UI components (Avatar, Button, etc.)
 ├── lib                 # Utility functions and helper files
@@ -82,6 +113,7 @@ To set up the project locally, follow these steps:
 ```
 
 ## Contributing
+
 1. Fork the repository.
 2. Create a new branch (`git checkout -b feature/YourFeature`).
 3. Commit your changes (`git commit -m 'Add new feature'`).
@@ -89,4 +121,5 @@ To set up the project locally, follow these steps:
 5. Open a Pull Request.
 
 ## License
+
 This project is licensed under the MIT License.
