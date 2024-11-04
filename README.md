@@ -36,7 +36,7 @@ To set up the project locally, follow these steps:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/mangamatch.git
+   git clone https://github.com/aguswirayasa/mangamatch.git
    cd mangamatch
    ```
 
