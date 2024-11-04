@@ -26,6 +26,9 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Manga Match",
   description: "A manga sharing platform ",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
