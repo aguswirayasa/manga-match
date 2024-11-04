@@ -100,18 +100,6 @@ Visit `http://localhost:3000` in your browser to start using Manga Match.
 - `DATABASE_URL`: URL to connect to the MySQL database.
 - `NEXTAUTH_SECRET`: Secret key for NextAuth session encryption.
 
-## Project Structure
-
-```plaintext
-├── components          # UI components (Avatar, Button, etc.)
-├── lib                 # Utility functions and helper files
-├── pages               # Next.js pages and routing
-├── prisma              # Prisma schema and migrations
-├── public              # Static assets (images, etc.)
-├── styles              # Global styles and Tailwind configuration
-└── .env                # Environment variables
-```
-
 ## Contributing
 
 1. Fork the repository.
